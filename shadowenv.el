@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.0.1
+;; Version: 0.0.2
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, environment
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -20,6 +20,9 @@
 (defconst shadowenv--set-unexported (string #x01))
 (defconst shadowenv--set-exported (string #x02))
 (defconst shadowenv--unset (string #x03))
+(defconst shadowenv-output-buffer "*shadowenv output*"
+  "Output buffer for shadowenv command.")
+
 
 (defgroup shadowenv nil
   "Shadowenv environment shadowing."
@@ -32,10 +35,6 @@ If nil, binary location is determined with PATH environment variable."
   :type '(choice (const :tag "Get location from $PATH" nil)
                  (file :tag "Specify location"))
   :group 'shadowenv)
-
-
-(defconst shadowenv-output-buffer "*shadowenv output*"
-  "Output buffer for shadowenv command.")
 
 
 (defvar shadowenv-data nil
