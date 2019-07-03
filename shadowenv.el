@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.1.0
+;; Version: 0.2.0
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, environment
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -92,6 +92,9 @@ Instructions come in the form of (opcode variable [value])."
     (error "Shadowenv mode must be enabled first"))
   (make-local-variable 'process-environment)
   (let ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data))))
+    (unless instructions
+      (shadowenv-mode -1)
+      (error "No shadowenv directives present, not enabling"))
     (mapc #'shadowenv--set instructions))
   (message "Shadowenv setup complete."))
 
