@@ -37,6 +37,12 @@ If nil, binary location is determined with PATH environment variable."
   :group 'shadowenv)
 
 
+(defcustom shadowenv-lighter "Shadowenv"
+  "Shadowenv mode line lighter."
+  :type 'string
+  :group 'shadowenv)
+
+
 (defvar shadowenv-data nil
   "Internal shadowenv data.")
 
@@ -92,9 +98,6 @@ Instructions come in the form of (opcode variable [value])."
     (error "Shadowenv mode must be enabled first"))
   (make-local-variable 'process-environment)
   (let ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data))))
-    (unless instructions
-      (shadowenv-mode -1)
-      (error "No shadowenv directives present, not enabling"))
     (mapc #'shadowenv--set instructions))
   (message "Shadowenv setup complete."))
 
@@ -102,7 +105,7 @@ Instructions come in the form of (opcode variable [value])."
 (define-minor-mode shadowenv-mode
   "Shadowenv environment shadowing."
   :init-value nil
-  :lighter " Shadowenv"
+  :lighter shadowenv-lighter
   (if shadowenv-mode
       (shadowenv-setup)
     (kill-local-variable 'process-environment)
