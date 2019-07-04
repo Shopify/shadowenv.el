@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.2.0
+;; Version: 0.3.0
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, environment
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -11,6 +11,7 @@
 ;;; Commentary:
 
 ;; This package provides integration with shadowenv environment shadowing for projects.
+;; Lists the number of shadowed environment variables in the mode line.
 ;; See https://shopify.github.io/shadowenv/ for more details.
 
 ;;; Code:
@@ -38,7 +39,7 @@ If nil, binary location is determined with PATH environment variable."
 
 
 (defcustom shadowenv-lighter "Shadowenv"
-  "Shadowenv mode line lighter."
+  "Shadowenv mode line lighter prefix."
   :type 'string
   :group 'shadowenv)
 
@@ -47,6 +48,11 @@ If nil, binary location is determined with PATH environment variable."
   "Internal shadowenv data.")
 
 (make-variable-buffer-local 'shadowenv-data)
+
+(defvar shadowenv--mode-line shadowenv-lighter
+  "Shadowenv mode line.")
+
+(make-variable-buffer-local 'shadowenv--mode-line)
 
 
 (defun shadowenv-run (data)
@@ -91,21 +97,30 @@ Instructions come in the form of (opcode variable [value])."
         (warn "Unrecognized operand for SET_UNEXPORTED operand: %s" variable))))))
 
 
+(defun shadowenv--update-mode-line (number)
+  "Update the shadowenv mode line to reflect the NUMBER of environment shadows."
+  (when (< number 1)
+    (setq number "-"))
+  (setq shadowenv--mode-line (format " %s[%s]" shadowenv-lighter number)))
+
+
 (defun shadowenv-setup ()
   "Setup shadowenv environment."
   (interactive)
   (unless shadowenv-mode
     (error "Shadowenv mode must be enabled first"))
   (make-local-variable 'process-environment)
-  (let ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data))))
-    (mapc #'shadowenv--set instructions))
+  (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
+        (num-items (length instructions)))
+    (mapc #'shadowenv--set instructions)
+    (shadowenv--update-mode-line (1- num-items)))
   (message "Shadowenv setup complete."))
 
 
 (define-minor-mode shadowenv-mode
   "Shadowenv environment shadowing."
   :init-value nil
-  :lighter shadowenv-lighter
+  :lighter shadowenv--mode-line
   (if shadowenv-mode
       (shadowenv-setup)
     (kill-local-variable 'process-environment)
