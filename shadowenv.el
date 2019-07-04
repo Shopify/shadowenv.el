@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.5.0
+;; Version: 0.5.1
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, environment
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -65,8 +65,9 @@ If nil, binary location is determined with PATH environment variable."
   (with-current-buffer (get-buffer-create shadowenv-output-buffer)
     (erase-buffer))
 
-  (let ((shadowenv-binary (or shadowenv-binary-location "shadowenv")))
-    (if (eq 0 (call-process shadowenv-binary nil (list shadowenv-output-buffer nil) nil "hook" "--porcelain" data))
+  (let ((shadowenv-binary (or shadowenv-binary-location "shadowenv"))
+        (output-buffers (list shadowenv-output-buffer nil)))
+    (if (eq 0 (call-process shadowenv-binary nil output-buffers nil "hook" "--porcelain" data))
         (with-current-buffer shadowenv-output-buffer
           (replace-regexp-in-string "\n$" "" (buffer-string)))
       (view-buffer-other-window shadowenv-output-buffer))))
