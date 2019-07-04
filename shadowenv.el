@@ -5,7 +5,7 @@
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, environment
 ;; URL: https://github.com/Shopify/shadowenv.el
-;;
+
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
