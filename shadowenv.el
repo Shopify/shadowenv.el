@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.3.0
+;; Version: 0.4.0
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, environment
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -44,7 +44,7 @@ If nil, binary location is determined with PATH environment variable."
   :group 'shadowenv)
 
 
-(defvar shadowenv-data nil
+(defvar shadowenv-data ""
   "Internal shadowenv data.")
 
 (make-variable-buffer-local 'shadowenv-data)
@@ -63,8 +63,10 @@ If nil, binary location is determined with PATH environment variable."
     (error "Cannot find shadowenv binary"))
 
   (let ((shadowenv-binary (or shadowenv-binary-location "shadowenv")))
-    (if (eq 0 (shell-command (concat shadowenv-binary " hook --porcelain '" data "'")
-                             shadowenv-output-buffer))
+    (when (get-buffer shadowenv-output-buffer)
+      (with-current-buffer shadowenv-output-buffer
+        (erase-buffer)))
+    (if (eq 0 (call-process shadowenv-binary nil shadowenv-output-buffer nil "hook" "--porcelain" data))
         (with-current-buffer shadowenv-output-buffer
           (replace-regexp-in-string "\n$" "" (buffer-string)))
       (view-buffer-other-window shadowenv-output-buffer))))
@@ -106,15 +108,13 @@ Instructions come in the form of (opcode variable [value])."
 
 (defun shadowenv-setup ()
   "Setup shadowenv environment."
-  (interactive)
   (unless shadowenv-mode
     (error "Shadowenv mode must be enabled first"))
   (make-local-variable 'process-environment)
   (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
         (num-items (length instructions)))
     (mapc #'shadowenv--set instructions)
-    (shadowenv--update-mode-line (1- num-items)))
-  (message "Shadowenv setup complete."))
+    (shadowenv--update-mode-line (1- num-items))))
 
 
 (define-minor-mode shadowenv-mode
@@ -124,7 +124,7 @@ Instructions come in the form of (opcode variable [value])."
   (if shadowenv-mode
       (shadowenv-setup)
     (kill-local-variable 'process-environment)
-    (setq shadowenv-data nil)))
+    (setq shadowenv-data "")))
 
 (provide'shadowenv)
 ;;; shadowenv.el ends here
