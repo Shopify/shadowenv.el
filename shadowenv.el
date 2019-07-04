@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.4.1
+;; Version: 0.5.0
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, environment
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -62,12 +62,11 @@ If nil, binary location is determined with PATH environment variable."
             (executable-find "shadowenv"))
     (error "Cannot find shadowenv binary"))
 
-  (when (get-buffer shadowenv-output-buffer)
-    (with-current-buffer shadowenv-output-buffer
-      (erase-buffer)))
+  (with-current-buffer (get-buffer-create shadowenv-output-buffer)
+    (erase-buffer))
 
   (let ((shadowenv-binary (or shadowenv-binary-location "shadowenv")))
-    (if (eq 0 (call-process shadowenv-binary nil shadowenv-output-buffer nil "hook" "--porcelain" data))
+    (if (eq 0 (call-process shadowenv-binary nil (list shadowenv-output-buffer nil) nil "hook" "--porcelain" data))
         (with-current-buffer shadowenv-output-buffer
           (replace-regexp-in-string "\n$" "" (buffer-string)))
       (view-buffer-other-window shadowenv-output-buffer))))
@@ -113,7 +112,7 @@ Instructions come in the form of (opcode variable [value])."
     (error "Shadowenv mode must be enabled first"))
   (make-local-variable 'process-environment)
   (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
-        (num-items (length instructions)))
+         (num-items (length instructions)))
     (mapc #'shadowenv--set instructions)
     (shadowenv--update-mode-line (1- num-items))))
 
