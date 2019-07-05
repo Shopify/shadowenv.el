@@ -119,6 +119,7 @@ Instructions come in the form of (opcode variable [value])."
     (shadowenv--update-mode-line (1- num-items))))
 
 
+;;;###autoload
 (define-minor-mode shadowenv-mode
   "Shadowenv environment shadowing."
   :init-value nil
