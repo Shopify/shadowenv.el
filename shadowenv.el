@@ -1,9 +1,9 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.6.0
+;; Version: 0.6.1
 ;; Package-Requires: ((emacs "24"))
-;; Keywords: shadowenv, environment
+;; Keywords: shadowenv, tools
 ;; URL: https://github.com/Shopify/shadowenv.el
 
 ;; This file is not part of GNU Emacs.
@@ -128,5 +128,5 @@ Instructions come in the form of (opcode variable [value])."
     (kill-local-variable 'process-environment)
     (setq shadowenv-data "")))
 
-(provide'shadowenv)
+(provide 'shadowenv)
 ;;; shadowenv.el ends here
