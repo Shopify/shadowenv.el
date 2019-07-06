@@ -10,7 +10,7 @@
 
 ;;; Commentary:
 
-;; This package provides integration with shadowenv environment shadowing for projects.
+;; This package provides integration with shadowenv environment shadowing.
 ;; Lists the number of shadowed environment variables in the mode line.
 ;; See https://shopify.github.io/shadowenv/ for more details.
 
