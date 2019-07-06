@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.7.0
+;; Version: 0.8.0
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, tools
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -113,13 +113,15 @@ Instructions come in the form of (opcode variable [value])."
     (error "Shadowenv mode must be enabled first"))
   (make-local-variable 'process-environment)
   (make-local-variable 'exec-path)
+  (make-local-variable 'eshell-path-env)
   (setq process-environment (copy-sequence process-environment))
-  (setq exec-path (copy-sequence exec-path))
   (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
          (num-items (length instructions)))
     (mapc #'shadowenv--set instructions)
-    (setq exec-path (parse-colon-path (getenv "PATH")))
-    (shadowenv--update-mode-line (1- num-items))))
+    (shadowenv--update-mode-line (1- num-items)))
+  (let ((path (getenv "PATH")))
+    (setq eshell-path-env path)
+    (setq exec-path (parse-colon-path path))))
 
 
 (defun shadowenv-down ()
