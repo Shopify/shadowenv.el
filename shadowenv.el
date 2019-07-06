@@ -15,6 +15,7 @@
 ;; See https://shopify.github.io/shadowenv/ for more details.
 
 ;;; Code:
+(require 'eshell)
 
 (defconst shadowenv--instruction-split (string #x1E))
 (defconst shadowenv--operand-split (string #x1F))
@@ -107,6 +108,16 @@ Instructions come in the form of (opcode variable [value])."
   (setq shadowenv--mode-line (format " %s[%s]" shadowenv-lighter number)))
 
 
+;;;###autoload
+(define-minor-mode shadowenv-mode
+  "Shadowenv environment shadowing."
+  :init-value nil
+  :lighter shadowenv--mode-line
+  (if shadowenv-mode
+      (shadowenv-setup)
+    (shadowenv-down)))
+
+
 (defun shadowenv-setup ()
   "Setup shadowenv environment."
   (unless shadowenv-mode
@@ -133,15 +144,6 @@ Instructions come in the form of (opcode variable [value])."
   (setq shadowenv-data "")
   (shadowenv--update-mode-line 0))
 
-
-;;;###autoload
-(define-minor-mode shadowenv-mode
-  "Shadowenv environment shadowing."
-  :init-value nil
-  :lighter shadowenv--mode-line
-  (if shadowenv-mode
-      (shadowenv-setup)
-    (shadowenv-down)))
 
 (defun shadowenv-reload ()
   "Reload shadowenv configuration."
