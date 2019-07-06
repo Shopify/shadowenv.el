@@ -129,6 +129,7 @@ Instructions come in the form of (opcode variable [value])."
   "Disable the shadowenv environment."
   (kill-local-variable 'process-environment)
   (kill-local-variable 'exec-path)
+  (kill-local-variable 'eshell-path-env)
   (setq shadowenv-data "")
   (shadowenv--update-mode-line 0))
 
