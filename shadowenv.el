@@ -115,6 +115,7 @@ Instructions come in the form of (opcode variable [value])."
   (make-local-variable 'exec-path)
   (make-local-variable 'eshell-path-env)
   (setq process-environment (copy-sequence process-environment))
+  (setq exec-path (copy-sequence exec-path))
   (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
          (num-items (length instructions)))
     (mapc #'shadowenv--set instructions)
@@ -140,6 +141,12 @@ Instructions come in the form of (opcode variable [value])."
   (if shadowenv-mode
       (shadowenv-setup)
     (shadowenv-down)))
+
+(defun shadowenv-reload ()
+  "Reload shadowenv configuration."
+  (interactive)
+  (shadowenv-mode -1)
+  (shadowenv-mode 1))
 
 (provide 'shadowenv)
 ;;; shadowenv.el ends here
