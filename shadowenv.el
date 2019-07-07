@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.8.1
+;; Version: 0.8.2
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, tools
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -51,7 +51,7 @@ If nil, binary location is determined with PATH environment variable."
 
 (make-variable-buffer-local 'shadowenv-data)
 
-(defvar shadowenv--mode-line shadowenv-lighter
+(defvar shadowenv--mode-line (concat " " shadowenv-lighter)
   "Shadowenv mode line.")
 
 (make-variable-buffer-local 'shadowenv--mode-line)
