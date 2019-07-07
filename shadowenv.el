@@ -119,6 +119,14 @@ Instructions come in the form of (opcode variable [value])."
     (shadowenv-down)))
 
 
+;;;###autoload
+(defun shadowenv-reload ()
+  "Reload shadowenv configuration."
+  (interactive)
+  (shadowenv-mode -1)
+  (shadowenv-mode 1))
+
+
 (defun shadowenv-setup ()
   "Setup shadowenv environment."
   (unless shadowenv-mode
@@ -145,12 +153,6 @@ Instructions come in the form of (opcode variable [value])."
   (setq shadowenv-data "")
   (shadowenv--update-mode-line 0))
 
-
-(defun shadowenv-reload ()
-  "Reload shadowenv configuration."
-  (interactive)
-  (shadowenv-mode -1)
-  (shadowenv-mode 1))
 
 (provide 'shadowenv)
 ;;; shadowenv.el ends here
