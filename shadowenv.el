@@ -14,6 +14,24 @@
 ;; Lists the number of shadowed environment variables in the mode line.
 ;; See https://shopify.github.io/shadowenv/ for more details.
 
+;;; Commands
+
+;; `shadowenv-mode' Toggle shadowenv mode in a buffer.
+;; `shadowenv-reload' Reload shadowenv environment.
+;; `shadowenv-shadows' Display changes to the current environment.
+
+;;; use-package
+
+;; Here's an example use-package configuration:
+
+;; (use-package shadowenv
+;;   :load-path "~/.emacs.d/shadowenv"
+;;   :hook ((find-file . shadowenv-reload)
+;;          (eshell-mode . shadowenv-reload)
+;;          (eshell-directory-change . shadowenv-reload)
+;;          (comint-mode . shadowenv-reload))
+;;   :commands (shadowenv-mode))
+
 ;;; Code:
 
 (require 'eshell)
