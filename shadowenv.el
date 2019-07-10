@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.9.0
+;; Version: 0.9.1
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, tools
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -162,9 +162,12 @@ Instructions come in the form of (opcode variable [value])."
   "Display the environment shadows in a popup buffer."
   (interactive)
   (let ((shadowenv-buffer (get-buffer-create (format "*shadowenv %s*" (buffer-name))))
-        shadows-list)
-    (with-current-buffer shadowenv-buffer (erase-buffer))
-    (dolist (shadow shadowenv-shadows shadows-list)
+        (no-change (eq shadowenv-shadows nil)))
+    (with-current-buffer shadowenv-buffer
+      (erase-buffer)
+      (when no-change
+        (insert "No environment shadows in the current buffer.")))
+    (dolist (shadow shadowenv-shadows)
       (let* ((variable (car shadow))
             (shadow-states (cdr shadow))
             (old-state (or (car shadow-states) ""))
