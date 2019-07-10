@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.8.2
+;; Version: 0.9.0
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, tools
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -48,14 +48,15 @@ If nil, binary location is determined with PATH environment variable."
 
 (defvar shadowenv-data ""
   "Internal shadowenv data.")
-
 (make-variable-buffer-local 'shadowenv-data)
 
 (defvar shadowenv--mode-line (concat " " shadowenv-lighter)
   "Shadowenv mode line.")
-
 (make-variable-buffer-local 'shadowenv--mode-line)
 
+(defvar shadowenv-shadows nil
+  "List of shadowed environment variables and their replacements.")
+(make-variable-buffer-local 'shadowenv-shadows)
 
 (defun shadowenv-run (data)
   "Run shadowenv porcelain with DATA."
@@ -91,6 +92,8 @@ Instructions come in the form of (opcode variable [value])."
   (let ((opcode (car instruction))
         (variable (cadr instruction))
         (value (caddr instruction)))
+    (unless (string= "__shadowenv_data" variable)
+      (push (cons variable (cons (getenv variable) value)) shadowenv-shadows))
     (cond
      ((string= opcode shadowenv--set-exported)
       (setenv variable value))
@@ -151,7 +154,26 @@ Instructions come in the form of (opcode variable [value])."
   (kill-local-variable 'exec-path)
   (kill-local-variable 'eshell-path-env)
   (setq shadowenv-data "")
+  (setq shadowenv-shadows nil)
   (shadowenv--update-mode-line 0))
+
+
+(defun shadowenv-shadows ()
+  "Display the environment shadows in a popup buffer."
+  (interactive)
+  (let ((shadowenv-buffer (get-buffer-create (format "*shadowenv %s*" (buffer-name))))
+        shadows-list)
+    (with-current-buffer shadowenv-buffer (erase-buffer))
+    (dolist (shadow shadowenv-shadows shadows-list)
+      (let* ((variable (car shadow))
+            (shadow-states (cdr shadow))
+            (old-state (or (car shadow-states) ""))
+            (new-state (or (cdr shadow-states) "")))
+        (with-current-buffer shadowenv-buffer
+          (insert variable "\n" old-state " -> " new-state "\n\n"))))
+    (with-current-buffer shadowenv-buffer
+      (goto-char (point-min)))
+    (view-buffer-other-window shadowenv-buffer)))
 
 
 (provide 'shadowenv)
