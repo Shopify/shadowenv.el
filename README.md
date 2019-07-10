@@ -9,7 +9,7 @@
 ## use-package
 Here is an example `use-package` configuration:
 ```elisp
-  (use-package shadowenv
+(use-package shadowenv
   :load-path "~/.emacs.d/shadowenv"
   :hook ((find-file . shadowenv-reload)
          (eshell-mode . shadowenv-reload)
