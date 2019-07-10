@@ -14,6 +14,7 @@ Here is an example `use-package` configuration:
   :hook ((find-file . shadowenv-reload)
          (eshell-mode . shadowenv-reload)
          (eshell-directory-change . shadowenv-reload)
-         (comint-mode . shadowenv-reload))
+         (comint-mode . shadowenv-reload)
+         (compilation-mode . shadowenv-reload))
   :commands (shadowenv-mode))
 ```
