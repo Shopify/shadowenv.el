@@ -4,7 +4,7 @@
 ## Commands
 * `shadowenv-mode` Toggle shadowenv mode in a buffer.
 * `shadowenv-reload` Reload shadowenv environment.
-* `shadowenv-shadows` Display changes to the environment variables.
+* `shadowenv-shadows` Display changes to the current environment.
 
 ## use-package
 Here is an example `use-package` configuration:
