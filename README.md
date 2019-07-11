@@ -12,6 +12,7 @@ Here is an example `use-package` configuration:
 ```elisp
 (use-package shadowenv
   :load-path "~/.emacs.d/shadowenv"
+  :hook (eshell-directory-change . shadowenv-reload)
   :config
   (shadowenv-global-mode))
 ```
