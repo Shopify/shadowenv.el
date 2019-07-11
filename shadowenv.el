@@ -27,7 +27,6 @@
 
 ;; (use-package shadowenv
 ;;   :load-path "~/.emacs.d/shadowenv"
-;;   :hook (eshell-directory-change . shadowenv-reload)
 ;;   :config
 ;;   (shadowenv-global-mode))
 
@@ -161,6 +160,8 @@ Instructions come in the form of (opcode variable [value])."
   (make-local-variable 'eshell-path-env)
   (setq process-environment (copy-sequence process-environment))
   (setq exec-path (copy-sequence exec-path))
+  (when (eq major-mode 'eshell-mode)
+    (add-hook 'eshell-directory-change-hook #'shadowenv-reload nil t))
   (when (file-exists-p default-directory)
     (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
            (num-items (length instructions)))
