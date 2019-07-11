@@ -17,6 +17,7 @@
 ;;; Commands
 
 ;; `shadowenv-mode' Toggle shadowenv mode in a buffer.
+;; `shadowenv-global-mode' Enable shadowenv global mode.
 ;; `shadowenv-reload' Reload shadowenv environment.
 ;; `shadowenv-shadows' Display changes to the current environment.
 
