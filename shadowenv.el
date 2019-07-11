@@ -27,8 +27,7 @@
 
 ;; (use-package shadowenv
 ;;   :load-path "~/.emacs.d/shadowenv"
-;;   :config
-;;   (shadowenv-global-mode))
+;;   :hook (after-init . shadowenv-global-mode))
 
 ;;; Code:
 
