@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.9.1
+;; Version: 0.10.0
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, tools
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -141,6 +141,11 @@ Instructions come in the form of (opcode variable [value])."
 
 
 ;;;###autoload
+(define-globalized-minor-mode shadowenv-global-mode shadowenv-mode shadowenv-mode
+  "Shadowenv environment shadowing global mode.")
+
+
+;;;###autoload
 (defun shadowenv-reload ()
   "Reload shadowenv configuration."
   (interactive)
@@ -157,13 +162,14 @@ Instructions come in the form of (opcode variable [value])."
   (make-local-variable 'eshell-path-env)
   (setq process-environment (copy-sequence process-environment))
   (setq exec-path (copy-sequence exec-path))
-  (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
-         (num-items (length instructions)))
-    (mapc #'shadowenv--set instructions)
-    (shadowenv--update-mode-line (1- num-items)))
-  (let ((path (getenv "PATH")))
-    (setq eshell-path-env path)
-    (setq exec-path (parse-colon-path path))))
+  (when (file-exists-p default-directory)
+    (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
+           (num-items (length instructions)))
+      (mapc #'shadowenv--set instructions)
+      (shadowenv--update-mode-line (1- num-items)))
+    (let ((path (getenv "PATH")))
+      (setq eshell-path-env path)
+      (setq exec-path (parse-colon-path path)))))
 
 
 (defun shadowenv-down ()
