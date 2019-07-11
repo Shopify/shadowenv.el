@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.10.0
+;; Version: 0.11.0
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, tools
 ;; URL: https://github.com/Shopify/shadowenv.el
