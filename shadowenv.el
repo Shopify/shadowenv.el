@@ -26,11 +26,8 @@
 
 ;; (use-package shadowenv
 ;;   :load-path "~/.emacs.d/shadowenv"
-;;   :hook ((find-file . shadowenv-reload)
-;;          (eshell-mode . shadowenv-reload)
-;;          (eshell-directory-change . shadowenv-reload)
-;;          (comint-mode . shadowenv-reload))
-;;   :commands (shadowenv-mode))
+;;   :config
+;;   (shadowenv-global-mode))
 
 ;;; Code:
 

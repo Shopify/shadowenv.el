@@ -3,6 +3,7 @@
 
 ## Commands
 * `shadowenv-mode` Toggle shadowenv mode in a buffer.
+* `shadowenv-global-mode` Enable shadowenv global mode.
 * `shadowenv-reload` Reload shadowenv environment.
 * `shadowenv-shadows` Display changes to the current environment.
 
@@ -11,10 +12,6 @@ Here is an example `use-package` configuration:
 ```elisp
 (use-package shadowenv
   :load-path "~/.emacs.d/shadowenv"
-  :hook ((find-file . shadowenv-reload)
-         (eshell-mode . shadowenv-reload)
-         (eshell-directory-change . shadowenv-reload)
-         (comint-mode . shadowenv-reload)
-         (compilation-mode . shadowenv-reload))
-  :commands (shadowenv-mode))
+  :config
+  (shadowenv-global-mode))
 ```
