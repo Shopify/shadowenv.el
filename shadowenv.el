@@ -1,7 +1,7 @@
 ;;; shadowenv.el --- Shadowenv integration. -*- lexical-binding: t; -*-
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
-;; Version: 0.11.0
+;; Version: 0.11.1
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: shadowenv, tools
 ;; URL: https://github.com/Shopify/shadowenv.el
@@ -161,10 +161,11 @@ Instructions come in the form of (opcode variable [value])."
   (setq exec-path (copy-sequence exec-path))
   (when (eq major-mode 'eshell-mode)
     (add-hook 'eshell-directory-change-hook #'shadowenv-reload nil t))
-  (when (file-exists-p default-directory)
+  (when (and (not (string-match "/.*:" default-directory)) ; Don't enable over TRAMP, causes
+             (file-exists-p default-directory))            ; recursive loop and crashed emacs
     (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
            (num-items (length instructions)))
-      (mapc #'shadowenv--set instructions)
+      (mapc #'shadowenv--set (shadowenv--sort-shadows instructions))
       (shadowenv--update-mode-line (1- num-items)))
     (let ((path (getenv "PATH")))
       (setq eshell-path-env path)
@@ -179,6 +180,11 @@ Instructions come in the form of (opcode variable [value])."
   (setq shadowenv-data "")
   (setq shadowenv-shadows nil)
   (shadowenv--update-mode-line 0))
+
+
+(defun shadowenv--sort-shadows (shadows)
+  "Sort the list of environment SHADOWS for display."
+  (sort (copy-sequence shadows) (lambda (s1 s2) (string< (car s1) (car s2)))))
 
 
 (defun shadowenv-shadows ()
