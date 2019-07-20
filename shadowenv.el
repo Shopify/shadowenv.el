@@ -151,11 +151,7 @@ Instructions come in the form of (opcode variable [value])."
   "Setup shadowenv environment."
   (unless shadowenv-mode
     (error "Shadowenv mode must be enabled first"))
-  (make-local-variable 'process-environment)
-  (make-local-variable 'exec-path)
-  (make-local-variable 'eshell-path-env)
-  (setq process-environment (copy-sequence process-environment))
-  (setq exec-path (copy-sequence exec-path))
+  (setq-local process-environment (copy-sequence process-environment))
   (when (eq major-mode 'eshell-mode)
     (add-hook 'eshell-directory-change-hook #'shadowenv-reload nil t))
   (when (and (not (string-match "/.*:" default-directory)) ; Don't enable over TRAMP, causes
@@ -165,8 +161,8 @@ Instructions come in the form of (opcode variable [value])."
       (mapc #'shadowenv--set (shadowenv--sort-shadows instructions))
       (shadowenv--update-mode-line (1- num-items)))
     (let ((path (getenv "PATH")))
-      (setq eshell-path-env path)
-      (setq exec-path (parse-colon-path path)))))
+      (setq-local eshell-path-env path)
+      (setq-local exec-path (parse-colon-path path)))))
 
 
 (defun shadowenv-down ()
