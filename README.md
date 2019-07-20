@@ -1,4 +1,6 @@
 # shadowenv.el
+[![MELPA](https://melpa.org/packages/shadowenv-badge.svg)](https://melpa.org/#/shadowenv)
+
 [Shadowenv](https://shopify.github.io/shadowenv) integration for emacs, per-buffer environment shadowing and eshell integration. Display the number of shadowed environment variables in the mode line.
 
 ## Commands
