@@ -2,7 +2,7 @@
 
 ;; Author: Dante Catalfamo <dante.catalfamo@shopify.com>
 ;; Version: 0.11.1
-;; Package-Requires: ((emacs "24"))
+;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: shadowenv, tools
 ;; URL: https://github.com/Shopify/shadowenv.el
 
