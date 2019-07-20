@@ -170,6 +170,8 @@ Instructions come in the form of (opcode variable [value])."
   (kill-local-variable 'process-environment)
   (kill-local-variable 'exec-path)
   (kill-local-variable 'eshell-path-env)
+  (when (eq major-mode 'eshell-mode)
+    (remove-hook 'eshell-directory-change-hook #'shadowenv-reload t))
   (setq shadowenv-data "")
   (setq shadowenv-shadows nil)
   (shadowenv--update-mode-line 0))
