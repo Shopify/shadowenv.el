@@ -76,10 +76,8 @@ If nil, binary location is determined with PATH environment variable."
               (file-executable-p shadowenv-binary-location)
             (executable-find "shadowenv"))
     (error "Cannot find shadowenv binary"))
-
   (with-current-buffer (get-buffer-create shadowenv-output-buffer)
     (erase-buffer))
-
   (let ((shadowenv-binary (or shadowenv-binary-location "shadowenv"))
         (output-buffers (list shadowenv-output-buffer nil)))
     (if (eq 0 (call-process shadowenv-binary nil output-buffers nil "hook" "--porcelain" data))
