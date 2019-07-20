@@ -70,6 +70,7 @@ If nil, binary location is determined with PATH environment variable."
 (defvar-local shadowenv-shadows nil
   "List of shadowed environment variables and their replacements.")
 
+
 (defun shadowenv-run (data)
   "Run shadowenv porcelain with DATA."
   (unless (if shadowenv-binary-location
