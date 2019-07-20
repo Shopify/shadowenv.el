@@ -61,17 +61,14 @@ If nil, binary location is determined with PATH environment variable."
   :group 'shadowenv)
 
 
-(defvar shadowenv-data ""
+(defvar-local shadowenv-data ""
   "Internal shadowenv data.")
-(make-variable-buffer-local 'shadowenv-data)
 
-(defvar shadowenv--mode-line (concat " " shadowenv-lighter)
+(defvar-local shadowenv--mode-line (concat " " shadowenv-lighter)
   "Shadowenv mode line.")
-(make-variable-buffer-local 'shadowenv--mode-line)
 
-(defvar shadowenv-shadows nil
+(defvar-local shadowenv-shadows nil
   "List of shadowed environment variables and their replacements.")
-(make-variable-buffer-local 'shadowenv-shadows)
 
 (defun shadowenv-run (data)
   "Run shadowenv porcelain with DATA."
