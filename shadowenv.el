@@ -186,7 +186,7 @@ Instructions come in the form of (opcode variable [value])."
   "Display the environment shadows in a popup buffer."
   (interactive)
   (let ((shadowenv-buffer (get-buffer-create (format "*shadowenv %s*" (buffer-name))))
-        (no-change (eq shadowenv-shadows nil)))
+        (no-change (null shadowenv-shadows)))
     (with-current-buffer shadowenv-buffer
       (erase-buffer)
       (when no-change
