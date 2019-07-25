@@ -157,7 +157,7 @@ Instructions come in the form of (opcode variable [value])."
              (file-exists-p default-directory))            ; recursive loop and crashed emacs
     (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
            (num-items (length instructions)))
-      (mapc #'shadowenv--set (shadowenv--sort-shadows instructions))
+      (mapc #'shadowenv--set instructions)
       (shadowenv--update-mode-line (1- num-items)))
     (let ((path (getenv "PATH")))
       (setq-local eshell-path-env path)
@@ -190,7 +190,7 @@ Instructions come in the form of (opcode variable [value])."
       (erase-buffer)
       (when no-change
         (insert "No environment shadows in the current buffer.")))
-    (dolist (shadow shadowenv-shadows)
+    (dolist (shadow (shadowenv--sort-shadows shadowenv-shadows))
       (let* ((variable (car shadow))
             (shadow-states (cdr shadow))
             (old-state (or (car shadow-states) ""))
