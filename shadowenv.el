@@ -71,12 +71,17 @@ If nil, binary location is determined with PATH environment variable."
   "List of shadowed environment variables and their replacements.")
 
 
+(defun shadowenv-binary-p ()
+  "Return a non-nil value if the shadowenv binary is available, otherwise return nil."
+  (if shadowenv-binary-location
+      (file-executable-p shadowenv-binary-location)
+    (executable-find "shadowenv")))
+
+
 (defun shadowenv-run (data)
   "Run shadowenv porcelain with DATA."
-  (unless (if shadowenv-binary-location
-              (file-executable-p shadowenv-binary-location)
-            (executable-find "shadowenv"))
-    (error "Cannot find shadowenv binary"))
+  (unless (shadowenv-binary-p)
+    (error "Shadowenv binary not found"))
   (with-current-buffer (get-buffer-create shadowenv-output-buffer)
     (erase-buffer))
   (let ((shadowenv-binary (or shadowenv-binary-location "shadowenv"))
