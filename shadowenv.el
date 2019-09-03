@@ -195,12 +195,13 @@ Instructions come in the form of (opcode variable [value])."
       (when no-change
         (insert "No environment shadows in the current buffer.")))
     (dolist (shadow (shadowenv--sort-shadows shadowenv-shadows))
-      (let* ((variable (car shadow))
-            (shadow-states (cdr shadow))
-            (old-state (or (car shadow-states) ""))
-            (new-state (or (cdr shadow-states) "")))
+      (let* ((variable (propertize (car shadow) 'face font-lock-variable-name-face))
+             (arrow (propertize " -> " 'face font-lock-keyword-face))
+             (shadow-states (cdr shadow))
+             (old-state (or (car shadow-states) ""))
+             (new-state (or (cdr shadow-states) "")))
         (with-current-buffer shadowenv-buffer
-          (insert variable "\n" old-state " -> " new-state "\n\n"))))
+          (insert variable "\n" old-state arrow new-state "\n\n"))))
     (with-current-buffer shadowenv-buffer
       (goto-char (point-min)))
     (view-buffer-other-window shadowenv-buffer)))
