@@ -13,5 +13,6 @@
 Here is an example `use-package` configuration:
 ```elisp
 (use-package shadowenv
+  :ensure t
   :hook (after-init . shadowenv-global-mode))
 ```
