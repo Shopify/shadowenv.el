@@ -150,6 +150,17 @@ Instructions come in the form of (opcode variable [value])."
   (shadowenv-mode 1))
 
 
+(defun shadowenv-setup-local ()
+  "Setup shadowenv for local environment."
+  (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
+           (num-items (length instructions)))
+      (mapc #'shadowenv--set instructions)
+      (shadowenv--update-mode-line (1- num-items)))
+    (let ((path (getenv "PATH")))
+      (setq-local eshell-path-env path)
+      (setq-local exec-path (parse-colon-path path))))
+
+
 (defun shadowenv-setup ()
   "Setup shadowenv environment."
   (unless shadowenv-mode
@@ -157,15 +168,9 @@ Instructions come in the form of (opcode variable [value])."
   (setq-local process-environment (copy-sequence process-environment))
   (when (eq major-mode 'eshell-mode)
     (add-hook 'eshell-directory-change-hook #'shadowenv-reload nil t))
-  (when (and (not (string-match "/.*:" default-directory)) ; Don't enable over TRAMP, causes
-             (file-exists-p default-directory))            ; recursive loop and crashed emacs
-    (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
-           (num-items (length instructions)))
-      (mapc #'shadowenv--set instructions)
-      (shadowenv--update-mode-line (1- num-items)))
-    (let ((path (getenv "PATH")))
-      (setq-local eshell-path-env path)
-      (setq-local exec-path (parse-colon-path path)))))
+  (if (and (not (file-remote-p default-directory)) ; Don't enable over TRAMP, causes
+           (file-exists-p default-directory))      ; recursive loop and crashed emacs
+      (shadowenv-setup-local)))
 
 
 (defun shadowenv-down ()
