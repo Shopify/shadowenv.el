@@ -84,11 +84,14 @@ If nil, binary location is determined with PATH environment variable."
   (with-current-buffer (get-buffer-create shadowenv-output-buffer)
     (erase-buffer))
   (let ((shadowenv-binary (or shadowenv-binary-location "shadowenv"))
-        (output-buffers (list shadowenv-output-buffer nil)))
-    (if (eq 0 (call-process shadowenv-binary nil output-buffers nil "hook" "--porcelain" data))
+        (output-buffers (list shadowenv-output-buffer nil))
+	proc-return)
+    (setq proc-return (call-process shadowenv-binary nil output-buffers nil "hook" "--porcelain" data))
+    (if (eq 0 proc-return)
         (with-current-buffer shadowenv-output-buffer
           (replace-regexp-in-string "\n$" "" (buffer-string)))
-      (view-buffer-other-window shadowenv-output-buffer))))
+      (view-buffer-other-window shadowenv-output-buffer)
+      (error "Shadowenv exited with a non-zero status: %d" proc-return))))
 
 
 (defun shadowenv-parse-instructions (instructions-string)
