@@ -60,9 +60,6 @@ If nil, binary location is determined with PATH environment variable."
   :group 'shadowenv)
 
 
-(defvar-local shadowenv-data ""
-  "Internal shadowenv data.")
-
 (defvar-local shadowenv--mode-line (concat " " shadowenv-lighter)
   "Shadowenv mode line.")
 
@@ -77,8 +74,8 @@ If nil, binary location is determined with PATH environment variable."
     (executable-find "shadowenv")))
 
 
-(defun shadowenv-run (data)
-  "Run shadowenv porcelain with DATA."
+(defun shadowenv-run ()
+  "Run shadowenv porcelain."
   (unless (shadowenv-binary-p)
     (error "Shadowenv binary not found"))
   (with-current-buffer (get-buffer-create shadowenv-output-buffer)
@@ -86,7 +83,7 @@ If nil, binary location is determined with PATH environment variable."
   (let ((shadowenv-binary (or shadowenv-binary-location "shadowenv"))
         (output-buffers (list shadowenv-output-buffer nil))
 	proc-return)
-    (setq proc-return (call-process shadowenv-binary nil output-buffers nil "hook" "--porcelain" data))
+    (setq proc-return (call-process shadowenv-binary nil output-buffers nil "hook" "--porcelain"))
     (if (eq 0 proc-return)
         (with-current-buffer shadowenv-output-buffer
           (replace-regexp-in-string "\n$" "" (buffer-string)))
@@ -118,9 +115,7 @@ Instructions come in the form of (opcode variable [value])."
      ((string= opcode shadowenv--unset)
       (setenv variable))
      ((string= opcode shadowenv--set-unexported)
-      (if (string= variable "__shadowenv_data")
-          (setq shadowenv-data value)
-        (warn "Unrecognized operand for SET_UNEXPORTED operand: %s" variable))))))
+      (setenv variable value)))))
 
 
 (defun shadowenv--update-mode-line (number)
@@ -155,7 +150,7 @@ Instructions come in the form of (opcode variable [value])."
 
 (defun shadowenv-setup-local ()
   "Setup shadowenv for local environment."
-  (let* ((instructions (shadowenv-parse-instructions (shadowenv-run shadowenv-data)))
+  (let* ((instructions (shadowenv-parse-instructions (shadowenv-run)))
            (num-items (length instructions)))
       (mapc #'shadowenv--set instructions)
       (shadowenv--update-mode-line (1- num-items)))
@@ -183,7 +178,6 @@ Instructions come in the form of (opcode variable [value])."
   (kill-local-variable 'eshell-path-env)
   (when (eq major-mode 'eshell-mode)
     (remove-hook 'eshell-directory-change-hook #'shadowenv-reload t))
-  (setq shadowenv-data "")
   (setq shadowenv-shadows nil)
   (shadowenv--update-mode-line 0))
 
